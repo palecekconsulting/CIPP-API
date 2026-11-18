@@ -12,8 +12,8 @@ function Invoke-RemoveTenantCapabilitiesCache {
     $Headers = $Request.Headers
 
 
-    # Get the tenant identifier from query parameters
-    $DefaultDomainName = $Request.Query.defaultDomainName
+    # Get the tenant identifier from the request body (POST) or query (legacy GET).
+    $DefaultDomainName = $Request.Body.defaultDomainName ?? $Request.Query.defaultDomainName
     if (-not $DefaultDomainName) {
         $body = [pscustomobject]@{'Results' = 'Missing required parameter: defaultDomainName' }
         $StatusCode = [HttpStatusCode]::BadRequest
@@ -38,7 +38,7 @@ function Invoke-RemoveTenantCapabilitiesCache {
         $Table = Get-CippTable -tablename 'CacheCapabilities'
 
         # Find the cache entry for this tenant
-        $Filter = "PartitionKey eq 'Capabilities' and RowKey eq '$DefaultDomainName'"
+        $Filter = "PartitionKey eq 'Capabilities' and RowKey eq '$(ConvertTo-CIPPODataFilterValue -Value $DefaultDomainName)'"
         $CacheEntry = Get-CIPPAzDataTableEntity @Table -Filter $Filter -Property PartitionKey, RowKey
 
         if ($CacheEntry) {

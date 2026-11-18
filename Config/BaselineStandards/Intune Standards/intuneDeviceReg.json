@@ -15,8 +15,6 @@
   "powershellEquivalent": "Update-MgBetaPolicyDeviceRegistrationPolicy",
   "appliesToTest": [
     "CIS_5_1_4_2",
-    "ZTNA21801",
-    "ZTNA21802",
     "ZTNA21837"
   ],
   "recommendedBy": [],
@@ -44,6 +42,7 @@
     "cacheType": "DeviceRegistrationPolicy"
   },
   "prepare": "Get-CIPPBaselineDeviceRegistrationPolicyState",
+  "writeTarget": "deviceRegistrationPolicy",
   "remediate": {
     "executor": "DeviceRegistrationPolicy",
     "set": {
